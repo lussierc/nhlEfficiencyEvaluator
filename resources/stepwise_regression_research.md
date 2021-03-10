@@ -35,4 +35,16 @@ There are a variety of advantages and disadvantages that come with Stepwise regr
 
 ## How can this project use it?
 ### Python:
+Finding a way to implement a form of Stepwise Regression in Python would be valuable/convenient because as of right now, I plan to implement my projection model/tool in Python.
+
+It is strange, but it seems no major Python ML libraries (like `sklearn` and `scikit-learn`) support Stepwise Regression. There are a couple workarounds that are mentioned in [this StackOverflow discussion](https://stackoverflow.com/questions/15433372/stepwise-regression-in-python). One workaround that looks promising would be to use the `statsmodels` library to implement a Forward Selection method.
+
 ### R:
+Many websites make it seem that Stepwise Regression is fairly simple to perform using a statistics software platform like R.
+
+One [such article](http://www.sthda.com/english/articles/37-model-selection-essentials-in-r/154-stepwise-regression-essentials-in-r/), says that in R there are three main types of stepwise regression that can be undertaken:
+- Forward Selection
+- Backward Selection
+- Stepwise Selection
+
+The main library needed to perform Stepwise Regression in R seems to be `leaps`. The above article tutorial also uses some other libraries (like `caret`, an ML library).
