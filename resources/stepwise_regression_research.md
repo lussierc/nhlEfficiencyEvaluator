@@ -16,6 +16,23 @@ The **"F-to-remove"** statistic mentioned above is calculated as follows:
 1. A t-statistic is calculated for the estimated coefficient of each variable in the model.
 2. The t-statistic is squared, creating the final "F-to-remove" stat!
 
+### Advantages & Disadvantages of Stepwise Regression
+There are a variety of advantages and disadvantages that come with Stepwise regression again according to [statisticshowto.com](https://www.statisticshowto.com/stepwise-regression/).
+
+#### Advantages:
+- Can manage large amounts of potential predictor variables, fine-tuning the model to chose the best predictor variables from the available options.
+- Faster than other automatic model-selection models.
+- Watching the order by which variables are added/removed can provide valuable info about the quality of variables.
+
+#### Disadvantages:
+- Oftentimes there are too many potential predictor variables but too little data to estimate coefficients meaningly.
+- If two predictor variables in the model are highly correlated, *only one may make it into the model*.
+- R-squared values are usuall to high.
+- Regression coefficients can be biased and coefficients for other variables are too high.
+- Collinearity is usually a major issue: excessive collinearity may cause the program to dump predictor variables into the model.
+- Some variables may be removed the model even when they are deemed important to be included.
+- etc.
+
 ## How can this project use it?
 ### Python:
 ### R:
