@@ -1,3 +1,3 @@
 # Projection Model Research
 
-Provides the results of performing stepwise regression on the statistic variables.
+Provides the results of researching player statistic projection models for the NHL and other leagues.
