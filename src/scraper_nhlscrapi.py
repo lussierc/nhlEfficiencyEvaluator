@@ -3,19 +3,19 @@
 from nhlscrapi.games.game import Game, GameKey, GameType
 from nhlscrapi.games.cumstats import Score, ShotCt, Corsi, Fenwick
 
-season = 2021                                    # 2013-2014 season
-game_num = 1                                  #
-game_type = GameType.Regular                     # regular season game
+season = 2021  # 2013-2014 season
+game_num = 1  #
+game_type = GameType.Regular  # regular season game
 game_key = GameKey(season, game_type, game_num)
 
 # define stat types that will be counted as the plays are parsed
 cum_stats = {
-  'Score': Score(),
-  'Shots': ShotCt(),
-  'Corsi': Corsi(),
-  'Fenwick': Fenwick()
+    "Score": Score(),
+    "Shots": ShotCt(),
+    "Corsi": Corsi(),
+    "Fenwick": Fenwick(),
 }
-game = Game(game_key, { 'Corsi': Corsi() })
+game = Game(game_key, {"Corsi": Corsi()})
 print("ORIGINAL")
 game.load_all()
 print(game.away_skaters.share())
@@ -34,17 +34,17 @@ print("END")
 # http req for roster report
 # only parses the sections related to officials and coaches
 print("Here")
-print('\nRefs          : {}'.format(game.refs))
-print('Linesman      : {}'.format(game.linesman))
-print('Coaches')
-print('  Home        : {}'.format(game.home_coach))
-print('\nRefs          : {}'.format(game.refs))
-print('Linesman      : {}'.format(game.linesman))
-print('Coaches')
-print('  Home        : {}'.format(game.home_coach))
-print('  Away        : {}'.format(game.away_coach))
+print("\nRefs          : {}".format(game.refs))
+print("Linesman      : {}".format(game.linesman))
+print("Coaches")
+print("  Home        : {}".format(game.home_coach))
+print("\nRefs          : {}".format(game.refs))
+print("Linesman      : {}".format(game.linesman))
+print("Coaches")
+print("  Home        : {}".format(game.home_coach))
+print("  Away        : {}".format(game.away_coach))
 print("Here")
-print('  TEST        : {}'.format(game.cum_stats))
+print("  TEST        : {}".format(game.cum_stats))
 
 # scrape all remaining reports
 game.load_all()
