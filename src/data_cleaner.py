@@ -88,11 +88,6 @@ def main():
 
                             combo = Counter(season_dict)
                             combo.update(Counter(new_game_dict))
-                            if game_player_key == "ID8471675":
-                                print(game_player_key)
-                                print("1", season_dict)
-                                print("2", new_game_dict)
-                                print("3", combo)
 
                             all_teams[home_team_name][game_player_key]["stats"] = combo
                     else:
@@ -126,11 +121,6 @@ def main():
                             new_game_dict = away_team[game_player_key]["stats"]
                             combo = Counter(season_dict)
                             combo.update(Counter(new_game_dict))
-                            if game_player_key == "ID8471675":
-                                print(game_player_key)
-                                print("1", season_dict)
-                                print("2", new_game_dict)
-                                print("3", combo)
 
                             all_teams[away_team_name][game_player_key]["stats"] = combo
                     else:
