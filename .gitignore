@@ -8,6 +8,7 @@ __pycache__/
 
 # NHL scraped data files
 *.pkl
+
 # Distribution / packaging
 .Python
 build/
