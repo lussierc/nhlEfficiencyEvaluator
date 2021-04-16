@@ -1,13 +1,15 @@
 import requests
 import pickle
 
-# Set up the API call variables
-game_data = []
-year = "2019"
-season_type = "02"
-max_game_ID = 1290
+game_data = []  # will hold scraped play-by-play data
+
+# Set up the API call variables:
+year = "2019"  # season/year
+season_type = "02"  # regular season, not pre-season or playoffs
+max_game_ID = 1290  # max num of games
 
 print("SCRAPING YOUR DATA")
+
 # Loop over the counter and format the API call
 for i in range(0, max_game_ID):
 
