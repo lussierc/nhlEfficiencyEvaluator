@@ -3,14 +3,10 @@
 import numpy as np
 import pandas as pd
 import pickle
-import matplotlib
-import matplotlib.pyplot as plt
-
-color_map = plt.cm.winter
-from matplotlib.patches import RegularPolygon
 import math
 import itertools
 from collections import Counter
+
 
 class Team:
     def __init__(self, team_name):
@@ -28,6 +24,7 @@ class Team:
     def add_player(self, new_player):
         self.players.append(new_player)
 
+
 class Player:
     def __init__(self, id, name, position, team):
         """Creates player."""
@@ -41,7 +38,7 @@ class Player:
         return self.team
 
     def update_player_team(self, new_team):
-        self.team = new_team # account for trades
+        self.team = new_team  # account for trades
 
     def update_player_stats(self, new_stats):
         """If stats exist, update them. If not, add them."""
@@ -52,14 +49,25 @@ class Player:
 
         if self.position == "Goalie":
             print("GOALIE")
-            counted_stats['evenStrengthSavePercentage'] = (counted_stats['evenSaves'] / counted_stats['evenShotsAgainst']) * 100
-            counted_stats['savePercentage'] = (counted_stats['saves'] / counted_stats['shots']) * 100
-            counted_stats['shortHandedSavePercentage'] = (counted_stats['shortHandedSaves'] / counted_stats['shortHandedShotsAgainst']) * 100
-            counted_stats['powerPlaySavePercentage'] = (counted_stats['powerPlaySaves'] / counted_stats['powerPlayShotsAgainst']) * 100
+            counted_stats["evenStrengthSavePercentage"] = (
+                counted_stats["evenSaves"] / counted_stats["evenShotsAgainst"]
+            ) * 100
+            counted_stats["savePercentage"] = (
+                counted_stats["saves"] / counted_stats["shots"]
+            ) * 100
+            counted_stats["shortHandedSavePercentage"] = (
+                counted_stats["shortHandedSaves"]
+                / counted_stats["shortHandedShotsAgainst"]
+            ) * 100
+            counted_stats["powerPlaySavePercentage"] = (
+                counted_stats["powerPlaySaves"] / counted_stats["powerPlayShotsAgainst"]
+            ) * 100
         else:
             print("SKATER")
             try:
-                counted_stats['faceOffPct'] = (counted_stats['faceOffWins'] / counted_stats['faceoffTaken']) * 100
+                counted_stats["faceOffPct"] = (
+                    counted_stats["faceOffWins"] / counted_stats["faceoffTaken"]
+                ) * 100
             except:
                 pass
         self.stats = counted_stats
@@ -73,6 +81,7 @@ class Player:
         print("- Position:", self.position)
         print("- Statistics:", self.stats)
 
+
 def main():
     """Runs the data cleaner."""
 
@@ -84,7 +93,39 @@ def main():
         print("ERROR IN FILENAME")
         quit()
 
-    all_team_names = ["Anaheim Ducks", "Arizona Coyotes", "Boston Bruins", "Buffalo Sabres", "Calgary Flames", "Carolina Hurricanes", "Chicago Blackhawks", "Colorado Avalanche", "Columbus Blue Jackets", "Dallas Stars", "Detroit Red Wings", "Edmonton Oilers", "Florida Panthers", "Los Angeles Kings", "Minnesota Wild", "Montréal Canadiens", "Nashville Predators", "New Jersey Devils", "New York Islanders", "New York Rangers", "Ottawa Senators", "Philadelphia Flyers", "Pittsburgh Penguins", "San Jose Sharks", "St. Louis Blues", "Tampa Bay Lightning", "Toronto Maple Leafs", "Vancouver Canucks", "Vegas Golden Knights", "Washington Capitals", "Winnipeg Jets"]
+    all_team_names = [
+        "Anaheim Ducks",
+        "Arizona Coyotes",
+        "Boston Bruins",
+        "Buffalo Sabres",
+        "Calgary Flames",
+        "Carolina Hurricanes",
+        "Chicago Blackhawks",
+        "Colorado Avalanche",
+        "Columbus Blue Jackets",
+        "Dallas Stars",
+        "Detroit Red Wings",
+        "Edmonton Oilers",
+        "Florida Panthers",
+        "Los Angeles Kings",
+        "Minnesota Wild",
+        "Montréal Canadiens",
+        "Nashville Predators",
+        "New Jersey Devils",
+        "New York Islanders",
+        "New York Rangers",
+        "Ottawa Senators",
+        "Philadelphia Flyers",
+        "Pittsburgh Penguins",
+        "San Jose Sharks",
+        "St. Louis Blues",
+        "Tampa Bay Lightning",
+        "Toronto Maple Leafs",
+        "Vancouver Canucks",
+        "Vegas Golden Knights",
+        "Washington Capitals",
+        "Winnipeg Jets",
+    ]
 
     players = {}
 
@@ -93,29 +134,35 @@ def main():
             teams = get_game_data(data)
 
             for team in teams.keys():
-                team_name = teams[team]['name']
-                team_players = teams[team]['finalized_roster']
+                team_name = teams[team]["name"]
+                team_players = teams[team]["finalized_roster"]
                 print(team_name)
                 print(team_players)
-                #'ID8475834': {'id': 'ID8475834', 'name': 'Marcus Sorensen', 'team': 'San Jose Sharks', 'position': 'Left Wing', 'stats': {'timeOnIce': 16, 'assists': 0, 'goals': 0, 'shots': 0, 'hits': 1, 'powerPlayGoals': 0, 'powerPlayAssists': 0, 'penaltyMinutes': 0, 'faceOffWins': 0, 'faceoffTaken': 0, 'takeaways': 0, 'giveaways': 0, 'shortHandedGoals': 0, 'shortHandedAssists': 0, 'blocked': 0, 'plusMinus': -3, 'evenTimeOnIce': 14, 'powerPlayTimeOnIce': 0, 'shortHandedTimeOnIce': 1, 'gp': 1}}
                 for player_key in team_players.keys():
-                    player_cur_game_id = team_players[player_key]['id']
-                    player_cur_game_name = team_players[player_key]['name']
-                    player_cur_game_team = team_players[player_key]['team']
-                    player_cur_game_pos = team_players[player_key]['position']
-                    player_cur_game_stats = team_players[player_key]['stats']
+                    player_cur_game_id = team_players[player_key]["id"]
+                    player_cur_game_name = team_players[player_key]["name"]
+                    player_cur_game_team = team_players[player_key]["team"]
+                    player_cur_game_pos = team_players[player_key]["position"]
+                    player_cur_game_stats = team_players[player_key]["stats"]
 
                     if player_key in players.keys():
                         player = players[player_key]
                         player.update_player_stats(player_cur_game_stats)
 
                         szn_team = player.get_player_team()
-                        if szn_team != player_cur_game_team: # player trade/movement has occurred
+                        if (
+                            szn_team != player_cur_game_team
+                        ):  # player trade/movement has occurred
                             player.update_player_team(player_cur_game_team)
                         else:
                             pass
                     else:
-                        player = Player(player_cur_game_id, player_cur_game_name, player_cur_game_team, player_cur_game_pos)
+                        player = Player(
+                            player_cur_game_id,
+                            player_cur_game_name,
+                            player_cur_game_team,
+                            player_cur_game_pos,
+                        )
                         player.update_player_stats(player_cur_game_stats)
                         players[player_key] = player
 
@@ -142,11 +189,12 @@ def main():
     for team in teams:
         print(team.get_team_name())
         team.print_all_players()
-                #all_teams[team_name][game_player_key]["stats"]
-                # for player_key in team_players.keys():
-                #     if player_key in players:
-                #         player = players[player_key]
-                #         player.update_player_stats(new_stats)
+        # all_teams[team_name][game_player_key]["stats"]
+        # for player_key in team_players.keys():
+        #     if player_key in players:
+        #         player = players[player_key]
+        #         player.update_player_stats(new_stats)
+
 
 def get_game_data(data):
     if "liveData" in data:
@@ -160,11 +208,22 @@ def get_game_data(data):
         away_team = {}
         away_team_players = game_teams["away"]["players"]
 
-        teams = {'home_team': {'name': team_name, 'players': home_team_players, 'finalized_roster': {}}, 'away_team': {'name': away_team_name, 'players': away_team_players, 'finalized_roster': {}}}
+        teams = {
+            "home_team": {
+                "name": team_name,
+                "players": home_team_players,
+                "finalized_roster": {},
+            },
+            "away_team": {
+                "name": away_team_name,
+                "players": away_team_players,
+                "finalized_roster": {},
+            },
+        }
 
         for team in teams.keys():
-            team_name = teams[team]['name']
-            team_players = teams[team]['players']
+            team_name = teams[team]["name"]
+            team_players = teams[team]["players"]
 
             for key in team_players.keys():
                 player = team_players[key]
@@ -219,7 +278,7 @@ def get_game_data(data):
                 else:
                     pass
 
-                teams[team]['finalized_roster'][key] = player_dict
+                teams[team]["finalized_roster"][key] = player_dict
     return teams
 
 
