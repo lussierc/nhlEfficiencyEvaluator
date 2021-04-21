@@ -61,73 +61,47 @@ def main():
 
     for data in game_data:
         if "liveData" in data:
-            home_team, home_team_name, away_team, away_team_name = get_game_data(data)
-            if all_teams[home_team_name]:
-                # there is data now we need to converge them
-                # if a player key is not in .keys() then you got to add that as a new player on the team
-                # if a player is in .keys() we need to find a way to converge them
+            teams = get_game_data(data)
 
-                for game_player_key in home_team.keys():
-                    if game_player_key not in all_teams[home_team_name].keys():
-                        # if a player does not exist on team, add them to it:
-                        all_teams[home_team_name][game_player_key] = home_team[
-                            game_player_key
-                        ]
-                    elif game_player_key in all_teams[home_team_name].keys():
-                        if all_teams[home_team_name][game_player_key]["stats"] == "":
-                            # if a player exists but does not have any statistics yet, give them first game stats:
-                            all_teams[home_team_name][game_player_key] = home_team[
+            for team in teams.keys():
+                team_name = teams[team]['name']
+                team_players = teams[team]['finalized_roster']
+
+
+                if all_teams[team_name]:
+                    # there is data now we need to converge them
+                    # if a player key is not in .keys() then you got to add that as a new player on the team
+                    # if a player is in .keys() we need to find a way to converge them
+
+                    for game_player_key in team_players.keys():
+                        if game_player_key not in all_teams[team_name].keys():
+                            # if a player does not exist on team, add them to it:
+                            all_teams[team_name][game_player_key] = team_players[
                                 game_player_key
                             ]
+                        elif game_player_key in all_teams[team_name].keys():
+                            if all_teams[team_name][game_player_key]["stats"] == "":
+                                # if a player exists but does not have any statistics yet, give them first game stats:
+                                all_teams[team_name][game_player_key] = team_players[
+                                    game_player_key
+                                ]
+                            else:
+                                # converge stats from new/current game with season stats
+                                season_dict = all_teams[team_name][game_player_key][
+                                    "stats"
+                                ]
+                                new_game_dict = team_players[game_player_key]["stats"]
+
+                                combo = Counter(season_dict)
+                                combo.update(Counter(new_game_dict))
+
+                                all_teams[team_name][game_player_key]["stats"] = combo
                         else:
-                            # converge stats from new/current game with season stats
-                            season_dict = all_teams[home_team_name][game_player_key][
-                                "stats"
-                            ]
-                            new_game_dict = home_team[game_player_key]["stats"]
+                            print("Error")
+                else:
+                    # there is no current version of the team, add them to their season-long dict of all teams:
+                    all_teams[team_name] = team_players
 
-                            combo = Counter(season_dict)
-                            combo.update(Counter(new_game_dict))
-
-                            all_teams[home_team_name][game_player_key]["stats"] = combo
-                    else:
-                        print("Error")
-            else:
-                # there is no current version of the team, add them to their season-long dict of all teams:
-                all_teams[home_team_name] = home_team
-
-            if all_teams[away_team_name]:
-                # there is data now we need to converge them
-                # if a player key is not in .keys() then you got to add that as a new player on the team
-                # if a player is in .keys() we need to find a way to converge them
-
-                for game_player_key in away_team.keys():
-                    if game_player_key not in all_teams[away_team_name].keys():
-                        # if a player does not exist on team, add them to it:
-                        all_teams[away_team_name][game_player_key] = away_team[
-                            game_player_key
-                        ]
-                    elif game_player_key in all_teams[away_team_name].keys():
-                        if all_teams[away_team_name][game_player_key]["stats"] == "":
-                            # if a player exists but does not have any statistics yet, give them first game stats:
-                            all_teams[away_team_name][game_player_key] = away_team[
-                                game_player_key
-                            ]
-                        else:
-                            # converge stats from new/current game with season stats
-                            season_dict = all_teams[away_team_name][game_player_key][
-                                "stats"
-                            ]
-                            new_game_dict = away_team[game_player_key]["stats"]
-                            combo = Counter(season_dict)
-                            combo.update(Counter(new_game_dict))
-
-                            all_teams[away_team_name][game_player_key]["stats"] = combo
-                    else:
-                        print("Error")
-            else:
-                # there is no current version of the team, add them to their season-long dict of all teams:
-                all_teams[away_team_name] = away_team
 
     for key in all_teams.keys():
         print("---------------------------------------")
@@ -140,7 +114,7 @@ def get_game_data(data):
     if "liveData" in data:
         game_teams = data["liveData"]["boxscore"]["teams"]
 
-        home_team_name = game_teams["home"]["team"]["name"]
+        team_name = game_teams["home"]["team"]["name"]
         home_team = {}
         home_team_players = game_teams["home"]["players"]
 
@@ -148,7 +122,7 @@ def get_game_data(data):
         away_team = {}
         away_team_players = game_teams["away"]["players"]
 
-        teams = {'home_team': {'name': home_team_name, 'players': home_team_players, 'finalized_roster': {}}, 'away_team': {'name': away_team_name, 'players': away_team_players, 'finalized_roster': {}}}
+        teams = {'home_team': {'name': team_name, 'players': home_team_players, 'finalized_roster': {}}, 'away_team': {'name': away_team_name, 'players': away_team_players, 'finalized_roster': {}}}
 
         for team in teams.keys():
             team_name = teams[team]['name']
@@ -207,12 +181,7 @@ def get_game_data(data):
                     pass
 
                 teams[team]['finalized_roster'][key] = player_dict
-
-    home_team = teams['home_team']['finalized_roster']
-
-    away_team = teams['away_team']['finalized_roster']
-
-    return home_team, home_team_name, away_team, away_team_name
+    return teams
 
 
 main()
