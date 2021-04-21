@@ -136,8 +136,7 @@ def main():
             for team in teams.keys():
                 team_name = teams[team]["name"]
                 team_players = teams[team]["finalized_roster"]
-                print(team_name)
-                print(team_players)
+
                 for player_key in team_players.keys():
                     player_cur_game_id = team_players[player_key]["id"]
                     player_cur_game_name = team_players[player_key]["name"]
@@ -189,28 +188,19 @@ def main():
     for team in teams:
         print(team.get_team_name())
         team.print_all_players()
-        # all_teams[team_name][game_player_key]["stats"]
-        # for player_key in team_players.keys():
-        #     if player_key in players:
-        #         player = players[player_key]
-        #         player.update_player_stats(new_stats)
-
 
 def get_game_data(data):
     if "liveData" in data:
         game_teams = data["liveData"]["boxscore"]["teams"]
 
-        team_name = game_teams["home"]["team"]["name"]
-        home_team = {}
+        home_team_name = game_teams["home"]["team"]["name"] # get home team attributes
         home_team_players = game_teams["home"]["players"]
-
-        away_team_name = game_teams["away"]["team"]["name"]
-        away_team = {}
+        away_team_name = game_teams["away"]["team"]["name"] # get away team attributes
         away_team_players = game_teams["away"]["players"]
 
         teams = {
             "home_team": {
-                "name": team_name,
+                "name": home_team_name,
                 "players": home_team_players,
                 "finalized_roster": {},
             },
@@ -219,31 +209,31 @@ def get_game_data(data):
                 "players": away_team_players,
                 "finalized_roster": {},
             },
-        }
+        } # create teams dict to hold all info for both teams for given game
 
         for team in teams.keys():
-            team_name = teams[team]["name"]
-            team_players = teams[team]["players"]
+            team_name = teams[team]["name"] # get current team name
+            team_players = teams[team]["players"] # get current team roster
 
             for key in team_players.keys():
-                player = team_players[key]
-                player_name = player["person"]["fullName"]
-                player_postition = player["position"]["name"]
+                player = team_players[key] # get the current player on the team
+                player_name = player["person"]["fullName"] # get player name
+                player_postition = player["position"]["name"] # get player position
+                player_stats = player["stats"] # get player stats for the game
                 player_dict = {
                     "id": key,
                     "name": player_name,
                     "team": team_name,
                     "position": player_postition,
                     "stats": "",
-                }
-                print(player_dict)
-                player_stats = player["stats"]
+                } # will hold all player info for the game
 
-                if player_stats:
-                    # not empty perform work
+
+                if player_stats: # if not empty, perform stat preparation work
                     if "skaterStats" in player_stats.keys():
                         player_dict["stats"] = player_stats["skaterStats"]
 
+                        # integerize time on ice (playing time):
                         player_dict["stats"]["timeOnIce"] = int(
                             player_dict["stats"]["timeOnIce"].split(":")[0]
                         )
@@ -256,13 +246,14 @@ def get_game_data(data):
                         player_dict["stats"]["shortHandedTimeOnIce"] = int(
                             player_dict["stats"]["shortHandedTimeOnIce"].split(":")[0]
                         )
-                        player_dict["stats"]["gp"] = 1
+
+                        player_dict["stats"]["gp"] = 1 # add game played
                     elif "goalieStats" in player_stats.keys():
                         player_dict["stats"] = player_stats["goalieStats"]
 
                         player_dict["stats"]["timeOnIce"] = int(
                             player_dict["stats"]["timeOnIce"].split(":")[0]
-                        )
+                        ) # integerize time on ice
 
                         if player_dict["stats"]["decision"] == "L":
                             player_dict["stats"]["losses"] = 1
@@ -270,15 +261,17 @@ def get_game_data(data):
                             player_dict["stats"]["wins"] = 1
                         else:
                             pass
-                        player_dict["stats"].pop("decision")
 
-                        player_dict["stats"]["gp"] = 1
+                        player_dict["stats"].pop("decision") # remove now unnecessary var
+
+                        player_dict["stats"]["gp"] = 1 # add game played
                     else:
                         print("ERROR")
                 else:
                     pass
 
-                teams[team]["finalized_roster"][key] = player_dict
+                teams[team]["finalized_roster"][key] = player_dict # add finalized player to team for the game
+
     return teams
 
 
