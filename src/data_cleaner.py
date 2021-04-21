@@ -12,6 +12,22 @@ import math
 import itertools
 from collections import Counter
 
+class Team:
+    def __init__(self, team_name):
+        """Creates team."""
+        self.team_name = team_name
+        self.players = []
+
+    def get_team_name(self):
+        return self.team_name
+
+    def print_all_players(self):
+        for player in self.players:
+            print(player.print_player_info())
+
+    def add_player(self, new_player):
+        self.players.append(new_player)
+
 class Player:
     def __init__(self, id, name, position, team):
         """Creates player."""
@@ -68,40 +84,7 @@ def main():
         print("ERROR IN FILENAME")
         quit()
 
-    # all_team_names = ["Anaheim Ducks", "Arizona Coyotes", "Boston Bruins", "Buffalo Sabres", "Calgary Flames", "Carolina Hurricanes", "Chicago Blackhawks", "Colorado Avalanche", "Columbus Blue Jackets", "Dallas Stars", "Detroit Red Wings", "Edmonton Oilers", "Florida Panthers", "Los Angeles Kings", "Minnesota Wild", "Montréal Canadiens", "Nashville Predators", "New Jersey Devils", "New York Islanders", "New York Rangers", "Ottawa Senators", "Philadelphia Flyers", "Pittsburgh Penguins", "San Jose Sharks", "St. Louis Blues", "Tampa Bay Lightning", "Toronto Maple Leafs", "Vancouver Canucks", "Vegas Golden Knights", "Washington Capitals", "Winnipeg Jets"]
-    all_teams = {
-        "Anaheim Ducks": {},
-        "Arizona Coyotes": {},
-        "Boston Bruins": {},
-        "Buffalo Sabres": {},
-        "Calgary Flames": {},
-        "Carolina Hurricanes": {},
-        "Chicago Blackhawks": {},
-        "Colorado Avalanche": {},
-        "Columbus Blue Jackets": {},
-        "Dallas Stars": {},
-        "Detroit Red Wings": {},
-        "Edmonton Oilers": {},
-        "Florida Panthers": {},
-        "Los Angeles Kings": {},
-        "Minnesota Wild": {},
-        "Montréal Canadiens": {},
-        "Nashville Predators": {},
-        "New Jersey Devils": {},
-        "New York Islanders": {},
-        "New York Rangers": {},
-        "Ottawa Senators": {},
-        "Philadelphia Flyers": {},
-        "Pittsburgh Penguins": {},
-        "San Jose Sharks": {},
-        "St. Louis Blues": {},
-        "Tampa Bay Lightning": {},
-        "Toronto Maple Leafs": {},
-        "Vancouver Canucks": {},
-        "Vegas Golden Knights": {},
-        "Washington Capitals": {},
-        "Winnipeg Jets": {},
-    }
+    all_team_names = ["Anaheim Ducks", "Arizona Coyotes", "Boston Bruins", "Buffalo Sabres", "Calgary Flames", "Carolina Hurricanes", "Chicago Blackhawks", "Colorado Avalanche", "Columbus Blue Jackets", "Dallas Stars", "Detroit Red Wings", "Edmonton Oilers", "Florida Panthers", "Los Angeles Kings", "Minnesota Wild", "Montréal Canadiens", "Nashville Predators", "New Jersey Devils", "New York Islanders", "New York Rangers", "Ottawa Senators", "Philadelphia Flyers", "Pittsburgh Penguins", "San Jose Sharks", "St. Louis Blues", "Tampa Bay Lightning", "Toronto Maple Leafs", "Vancouver Canucks", "Vegas Golden Knights", "Washington Capitals", "Winnipeg Jets"]
 
     players = {}
 
@@ -140,7 +123,25 @@ def main():
         player = players[player_key]
         player.print_player_info()
 
+    teams = []
+    for team_name in all_team_names:
+        team = Team(team_name)
+        teams.append(team)
 
+    for team in teams:
+        for player_key in players.keys():
+            player = players[player_key]
+            player_team = player.get_player_team()
+            team_name = team.get_team_name()
+
+            if player_team == team_name:
+                team.add_player(player)
+            else:
+                pass
+
+    for team in teams:
+        print(team.get_team_name())
+        team.print_all_players()
                 #all_teams[team_name][game_player_key]["stats"]
                 # for player_key in team_players.keys():
                 #     if player_key in players:
