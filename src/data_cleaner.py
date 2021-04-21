@@ -148,109 +148,69 @@ def get_game_data(data):
         away_team = {}
         away_team_players = game_teams["away"]["players"]
 
-        for key in home_team_players.keys():
-            player = home_team_players[key]
-            player_name = player["person"]["fullName"]
-            player_postition = player["position"]["name"]
-            cur_player = {
-                "name": player_name,
-                "stats": "",
-                "position": player_postition,
-            }
-            player_stats = player["stats"]
+        teams = {'home_team': {'name': home_team_name, 'players': home_team_players, 'finalized_roster': {}}, 'away_team': {'name': away_team_name, 'players': away_team_players, 'finalized_roster': {}}}
 
-            if player_stats:
-                # not empty perform work
-                if "skaterStats" in player_stats.keys():
-                    cur_player["stats"] = player_stats["skaterStats"]
+        for team in teams.keys():
+            team_name = teams[team]['name']
+            team_players = teams[team]['players']
 
-                    cur_player["stats"]["timeOnIce"] = int(
-                        cur_player["stats"]["timeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["evenTimeOnIce"] = int(
-                        cur_player["stats"]["evenTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["powerPlayTimeOnIce"] = int(
-                        cur_player["stats"]["powerPlayTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["shortHandedTimeOnIce"] = int(
-                        cur_player["stats"]["shortHandedTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["gp"] = 1
-                elif "goalieStats" in player_stats.keys():
-                    cur_player["stats"] = player_stats["goalieStats"]
+            for key in team_players.keys():
+                player = team_players[key]
+                player_name = player["person"]["fullName"]
+                player_postition = player["position"]["name"]
+                player_dict = {
+                    "id": key,
+                    "name": player_name,
+                    "position": player_postition,
+                    "stats": "",
+                }
+                print(player_dict)
+                player_stats = player["stats"]
 
-                    cur_player["stats"]["timeOnIce"] = int(
-                        cur_player["stats"]["timeOnIce"].split(":")[0]
-                    )
+                if player_stats:
+                    # not empty perform work
+                    if "skaterStats" in player_stats.keys():
+                        player_dict["stats"] = player_stats["skaterStats"]
 
-                    if cur_player["stats"]["decision"] == "L":
-                        cur_player["stats"]["losses"] = 1
-                    elif cur_player["stats"]["decision"] == "W":
-                        cur_player["stats"]["wins"] = 1
+                        player_dict["stats"]["timeOnIce"] = int(
+                            player_dict["stats"]["timeOnIce"].split(":")[0]
+                        )
+                        player_dict["stats"]["evenTimeOnIce"] = int(
+                            player_dict["stats"]["evenTimeOnIce"].split(":")[0]
+                        )
+                        player_dict["stats"]["powerPlayTimeOnIce"] = int(
+                            player_dict["stats"]["powerPlayTimeOnIce"].split(":")[0]
+                        )
+                        player_dict["stats"]["shortHandedTimeOnIce"] = int(
+                            player_dict["stats"]["shortHandedTimeOnIce"].split(":")[0]
+                        )
+                        player_dict["stats"]["gp"] = 1
+                    elif "goalieStats" in player_stats.keys():
+                        player_dict["stats"] = player_stats["goalieStats"]
+
+                        player_dict["stats"]["timeOnIce"] = int(
+                            player_dict["stats"]["timeOnIce"].split(":")[0]
+                        )
+
+                        if player_dict["stats"]["decision"] == "L":
+                            player_dict["stats"]["losses"] = 1
+                        elif player_dict["stats"]["decision"] == "W":
+                            player_dict["stats"]["wins"] = 1
+                        else:
+                            pass
+                        player_dict["stats"].pop("decision")
+
+                        player_dict["stats"]["gp"] = 1
                     else:
-                        pass
-                    cur_player["stats"].pop("decision")
-
-                    cur_player["stats"]["gp"] = 1
+                        print("ERROR")
                 else:
-                    print("ERROR")
-            else:
-                pass
+                    pass
 
-            home_team[key] = cur_player
+                teams[team]['finalized_roster'][key] = player_dict
 
-        for key in away_team_players.keys():
-            player = away_team_players[key]
-            player_name = player["person"]["fullName"]
-            player_postition = player["position"]["name"]
-            cur_player = {
-                "name": player_name,
-                "stats": "",
-                "position": player_postition,
-            }
-            player_stats = player["stats"]
+    home_team = teams['home_team']['finalized_roster']
 
-            if player_stats:
-                # not empty perform work
-                if "skaterStats" in player_stats.keys():
-                    cur_player["stats"] = player_stats["skaterStats"]
-
-                    cur_player["stats"]["timeOnIce"] = int(
-                        cur_player["stats"]["timeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["evenTimeOnIce"] = int(
-                        cur_player["stats"]["evenTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["powerPlayTimeOnIce"] = int(
-                        cur_player["stats"]["powerPlayTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["shortHandedTimeOnIce"] = int(
-                        cur_player["stats"]["shortHandedTimeOnIce"].split(":")[0]
-                    )
-                    cur_player["stats"]["gp"] = 1
-                elif "goalieStats" in player_stats.keys():
-                    cur_player["stats"] = player_stats["goalieStats"]
-
-                    cur_player["stats"]["timeOnIce"] = int(
-                        cur_player["stats"]["timeOnIce"].split(":")[0]
-                    )
-
-                    if cur_player["stats"]["decision"] == "L":
-                        cur_player["stats"]["losses"] = 1
-                    elif cur_player["stats"]["decision"] == "W":
-                        cur_player["stats"]["wins"] = 1
-                    else:
-                        pass
-                    cur_player["stats"].pop("decision")
-
-                    cur_player["stats"]["gp"] = 1
-
-                else:
-                    print("ERROR")
-            else:
-                pass
-            away_team[key] = cur_player
+    away_team = teams['away_team']['finalized_roster']
 
     return home_team, home_team_name, away_team, away_team_name
 
