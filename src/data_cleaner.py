@@ -47,21 +47,39 @@ class Player:
         combo.update(Counter(new_stats))
         counted_stats = dict(combo)
 
+        if "saves" in self.stats:
+            self.position = "Goalie"
+        elif "evenTimeOnIce" in self.stats:
+            self.position = "Skater"
+        else:
+            self.position = "Unknown"
+
         if self.position == "Goalie":
-            print("GOALIE")
-            counted_stats["evenStrengthSavePercentage"] = (
-                counted_stats["evenSaves"] / counted_stats["evenShotsAgainst"]
-            ) * 100
-            counted_stats["savePercentage"] = (
-                counted_stats["saves"] / counted_stats["shots"]
-            ) * 100
-            counted_stats["shortHandedSavePercentage"] = (
-                counted_stats["shortHandedSaves"]
-                / counted_stats["shortHandedShotsAgainst"]
-            ) * 100
-            counted_stats["powerPlaySavePercentage"] = (
-                counted_stats["powerPlaySaves"] / counted_stats["powerPlayShotsAgainst"]
-            ) * 100
+            try:
+                counted_stats["evenStrengthSavePercentage"] = (
+                    counted_stats["evenSaves"] / counted_stats["evenShotsAgainst"]
+                ) * 100
+            except:
+                pass
+            try:
+                counted_stats["savePercentage"] = (
+                    counted_stats["saves"] / counted_stats["shots"]
+                ) * 100
+            except:
+                pass
+            try:
+                counted_stats["shortHandedSavePercentage"] = (
+                    counted_stats["shortHandedSaves"]
+                    / counted_stats["shortHandedShotsAgainst"]
+                ) * 100
+            except:
+                pass
+            try:
+                counted_stats["powerPlaySavePercentage"] = (
+                    counted_stats["powerPlaySaves"] / counted_stats["powerPlayShotsAgainst"]
+                ) * 100
+            except:
+                pass
         else:
             print("SKATER")
             try:
@@ -159,8 +177,8 @@ def main():
                         player = Player(
                             player_cur_game_id,
                             player_cur_game_name,
-                            player_cur_game_team,
                             player_cur_game_pos,
+                            player_cur_game_team,
                         )
                         player.update_player_stats(player_cur_game_stats)
                         players[player_key] = player
