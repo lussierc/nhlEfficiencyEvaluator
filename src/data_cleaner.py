@@ -19,7 +19,7 @@ class Team:
 
     def print_all_players(self):
         for player in self.players:
-            print(player.print_player_info())
+            player.print_player_info()
 
     def add_player(self, new_player):
         self.players.append(new_player)
@@ -111,40 +111,17 @@ def main():
         print("ERROR IN FILENAME")
         quit()
 
-    all_team_names = [
-        "Anaheim Ducks",
-        "Arizona Coyotes",
-        "Boston Bruins",
-        "Buffalo Sabres",
-        "Calgary Flames",
-        "Carolina Hurricanes",
-        "Chicago Blackhawks",
-        "Colorado Avalanche",
-        "Columbus Blue Jackets",
-        "Dallas Stars",
-        "Detroit Red Wings",
-        "Edmonton Oilers",
-        "Florida Panthers",
-        "Los Angeles Kings",
-        "Minnesota Wild",
-        "Montréal Canadiens",
-        "Nashville Predators",
-        "New Jersey Devils",
-        "New York Islanders",
-        "New York Rangers",
-        "Ottawa Senators",
-        "Philadelphia Flyers",
-        "Pittsburgh Penguins",
-        "San Jose Sharks",
-        "St. Louis Blues",
-        "Tampa Bay Lightning",
-        "Toronto Maple Leafs",
-        "Vancouver Canucks",
-        "Vegas Golden Knights",
-        "Washington Capitals",
-        "Winnipeg Jets",
-    ]
+    players = get_player_data(game_data)
+    for player_key in players.keys():
+        player = players[player_key]
+        player.print_player_info()
 
+    teams = organize_teams(players)
+    for team in teams:
+        print(team.get_team_name())
+        team.print_all_players()
+
+def get_player_data(game_data):
     players = {}
 
     for data in game_data:
@@ -183,9 +160,42 @@ def main():
                         player.update_player_stats(player_cur_game_stats)
                         players[player_key] = player
 
-    for player_key in players.keys():
-        player = players[player_key]
-        player.print_player_info()
+    return players
+
+def organize_teams(players):
+    all_team_names = [
+        "Anaheim Ducks",
+        "Arizona Coyotes",
+        "Boston Bruins",
+        "Buffalo Sabres",
+        "Calgary Flames",
+        "Carolina Hurricanes",
+        "Chicago Blackhawks",
+        "Colorado Avalanche",
+        "Columbus Blue Jackets",
+        "Dallas Stars",
+        "Detroit Red Wings",
+        "Edmonton Oilers",
+        "Florida Panthers",
+        "Los Angeles Kings",
+        "Minnesota Wild",
+        "Montréal Canadiens",
+        "Nashville Predators",
+        "New Jersey Devils",
+        "New York Islanders",
+        "New York Rangers",
+        "Ottawa Senators",
+        "Philadelphia Flyers",
+        "Pittsburgh Penguins",
+        "San Jose Sharks",
+        "St. Louis Blues",
+        "Tampa Bay Lightning",
+        "Toronto Maple Leafs",
+        "Vancouver Canucks",
+        "Vegas Golden Knights",
+        "Washington Capitals",
+        "Winnipeg Jets",
+    ]
 
     teams = []
     for team_name in all_team_names:
@@ -203,9 +213,7 @@ def main():
             else:
                 pass
 
-    for team in teams:
-        print(team.get_team_name())
-        team.print_all_players()
+    return teams
 
 def get_game_data(data):
     if "liveData" in data:
