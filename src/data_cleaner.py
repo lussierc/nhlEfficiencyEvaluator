@@ -76,7 +76,8 @@ class Player:
                 pass
             try:
                 counted_stats["powerPlaySavePercentage"] = (
-                    counted_stats["powerPlaySaves"] / counted_stats["powerPlayShotsAgainst"]
+                    counted_stats["powerPlaySaves"]
+                    / counted_stats["powerPlayShotsAgainst"]
                 ) * 100
             except:
                 pass
@@ -121,6 +122,7 @@ def main():
         print(team.get_team_name())
         team.print_all_players()
 
+
 def get_player_data(game_data):
     players = {}
 
@@ -161,6 +163,7 @@ def get_player_data(game_data):
                         players[player_key] = player
 
     return players
+
 
 def organize_teams(players):
     all_team_names = [
@@ -215,13 +218,14 @@ def organize_teams(players):
 
     return teams
 
+
 def get_game_data(data):
     if "liveData" in data:
         game_teams = data["liveData"]["boxscore"]["teams"]
 
-        home_team_name = game_teams["home"]["team"]["name"] # get home team attributes
+        home_team_name = game_teams["home"]["team"]["name"]  # get home team attributes
         home_team_players = game_teams["home"]["players"]
-        away_team_name = game_teams["away"]["team"]["name"] # get away team attributes
+        away_team_name = game_teams["away"]["team"]["name"]  # get away team attributes
         away_team_players = game_teams["away"]["players"]
 
         teams = {
@@ -235,27 +239,26 @@ def get_game_data(data):
                 "players": away_team_players,
                 "finalized_roster": {},
             },
-        } # create teams dict to hold all info for both teams for given game
+        }  # create teams dict to hold all info for both teams for given game
 
         for team in teams.keys():
-            team_name = teams[team]["name"] # get current team name
-            team_players = teams[team]["players"] # get current team roster
+            team_name = teams[team]["name"]  # get current team name
+            team_players = teams[team]["players"]  # get current team roster
 
             for key in team_players.keys():
-                player = team_players[key] # get the current player on the team
-                player_name = player["person"]["fullName"] # get player name
-                player_postition = player["position"]["name"] # get player position
-                player_stats = player["stats"] # get player stats for the game
+                player = team_players[key]  # get the current player on the team
+                player_name = player["person"]["fullName"]  # get player name
+                player_postition = player["position"]["name"]  # get player position
+                player_stats = player["stats"]  # get player stats for the game
                 player_dict = {
                     "id": key,
                     "name": player_name,
                     "team": team_name,
                     "position": player_postition,
                     "stats": "",
-                } # will hold all player info for the game
+                }  # will hold all player info for the game
 
-
-                if player_stats: # if not empty, perform stat preparation work
+                if player_stats:  # if not empty, perform stat preparation work
                     if "skaterStats" in player_stats.keys():
                         player_dict["stats"] = player_stats["skaterStats"]
 
@@ -273,13 +276,13 @@ def get_game_data(data):
                             player_dict["stats"]["shortHandedTimeOnIce"].split(":")[0]
                         )
 
-                        player_dict["stats"]["gp"] = 1 # add game played
+                        player_dict["stats"]["gp"] = 1  # add game played
                     elif "goalieStats" in player_stats.keys():
                         player_dict["stats"] = player_stats["goalieStats"]
 
                         player_dict["stats"]["timeOnIce"] = int(
                             player_dict["stats"]["timeOnIce"].split(":")[0]
-                        ) # integerize time on ice
+                        )  # integerize time on ice
 
                         if player_dict["stats"]["decision"] == "L":
                             player_dict["stats"]["losses"] = 1
@@ -288,15 +291,19 @@ def get_game_data(data):
                         else:
                             pass
 
-                        player_dict["stats"].pop("decision") # remove now unnecessary var
+                        player_dict["stats"].pop(
+                            "decision"
+                        )  # remove now unnecessary var
 
-                        player_dict["stats"]["gp"] = 1 # add game played
+                        player_dict["stats"]["gp"] = 1  # add game played
                     else:
                         print("ERROR")
                 else:
                     pass
 
-                teams[team]["finalized_roster"][key] = player_dict # add finalized player to team for the game
+                teams[team]["finalized_roster"][
+                    key
+                ] = player_dict  # add finalized player to team for the game
 
     return teams
 
