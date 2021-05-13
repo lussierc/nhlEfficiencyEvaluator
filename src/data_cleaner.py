@@ -113,9 +113,6 @@ def main():
         quit()
 
     players = get_player_data(game_data)
-    for player_key in players.keys():
-        player = players[player_key]
-        player.print_player_info()
 
     teams = organize_teams(players)
     for team in teams:
