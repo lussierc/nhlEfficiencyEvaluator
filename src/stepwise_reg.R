@@ -3,8 +3,9 @@ library(caret)
 library(leaps)
 library(MASS)
 
+nhl_data = read.csv("nhl-stats.csv", header = TRUE)
 # Fit the full model 
-full.model <- lm(Fertility ~., data = swiss)
+full.model <- lm(nhl_data)
 
 # Stepwise regression model
 step.model <- stepAIC(full.model, direction = "both", 
