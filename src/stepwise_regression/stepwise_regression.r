@@ -2,9 +2,10 @@
 
 # Import data:
 ### NOTE: Edit the path of the CSV document to your own -- if you are using my repo, find the location on your computer:
-formatted_nhl_full_stats <- read.csv("~/cs590s2021/nhlStatisticProjections/src/formatted_nhl_full_stats.csv", row.names=1)
+formatted_nhl_full_stats <- read.csv("~/cs590s2021/nhlStatisticProjections/src/stepwise_regression/formatted_nhl_full_stats.csv", row.names=1)
 
 # View the imported statistics:
+View(formatted_nhl_full_stats)
 head(formatted_nhl_full_stats)
 
 # Define intercept-only model:
