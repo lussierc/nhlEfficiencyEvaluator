@@ -1,4 +1,4 @@
-"""Cleans the scraped data by calculating player statistics."""
+"""Parses through scraped game data to calculate player statistics."""
 
 import numpy as np
 import pandas as pd
@@ -7,27 +7,33 @@ import math
 import itertools
 from collections import Counter
 
-
 class Team:
+    """Holds a team's information and player objects."""
     def __init__(self, team_name):
         """Creates team."""
+
         self.team_name = team_name
         self.players = []
         self.skaters_df = pd.DataFrame()
         self.goalies_df = pd.DataFrame()
 
-
     def get_team_name(self):
         return self.team_name
 
     def print_all_players(self):
+        """Prints out the team DFs of players."""
+
         print("--------------------", self.team_name, "--------------------")
+        # print skaters on team:
         print("* Printing Skaters:")
         print(self.skaters_df)
+        # print goalies on team:
         print("* Printing Goalies:")
         print(self.goalies_df)
 
     def add_player(self, new_player):
+        """Adds a new player to the team."""
+
         self.players.append(new_player) # add player object to team
         if new_player.get_player_position() == 'Goalie':
             self.goalies_df=self.goalies_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
@@ -35,8 +41,10 @@ class Team:
             self.skaters_df=self.skaters_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
 
 class Player:
+    """Player class. Holds the general information and stats for an individual player."""
     def __init__(self, id, name, position, team):
         """Creates player."""
+
         self.id = id
         self.name = name
         self.position = position
@@ -44,12 +52,18 @@ class Player:
         self.stats = {}
 
     def get_player_team(self):
+        """Returns a player's team."""
+
         return self.team
 
     def get_player_position(self):
+        """Returns a player's position."""
+
         return self.position
 
     def update_player_team(self, new_team):
+        """Updates the player's team if they moved during the season."""
+
         self.team = new_team  # account for trades
 
     def update_player_stats(self, new_stats):
@@ -94,7 +108,6 @@ class Player:
             except:
                 pass
         else:
-            print("SKATER")
             try:
                 counted_stats["faceOffPct"] = (
                     counted_stats["faceOffWins"] / counted_stats["faceoffTaken"]
@@ -105,7 +118,9 @@ class Player:
 
     def finalize_player_stats_df(self):
         """Puts player info in a DF for future use/displaying."""
+
         self.stats_df = pd.DataFrame.from_dict([self.stats])
+
         self.stats_df.insert(loc=0, column = 'Team', value = [self.team])
         self.stats_df.insert(loc=0, column = 'Position', value = [self.position])
         self.stats_df.insert(loc=0, column = 'Name', value = [self.name])
@@ -113,6 +128,8 @@ class Player:
         self.stats_df = self.stats_df[sorted(self.stats_df)]
 
     def get_finalized_player_stats_df(self):
+        """Return the finalied player DF."""
+
         return self.stats_df
 
     def finalize_player_avg_stats_df(self):
@@ -121,17 +138,13 @@ class Player:
         # create value rating system
         ## points + hits + shots + +/- + blocks
 
-    def print_player_info(self):
+    def print_player_dfs(self):
         """Prints player information."""
-        print("PLAYER INFO")
-        print("- ID:", self.id)
-        print("- Name:", self.name)
-        print("- Team:", self.team)
-        print("- Position:", self.position)
-        print("- Statistics:", self.stats)
 
+        print("Player DF:")
+        print(self.stats_df)
 
-def main():
+def run_data_cleaner():
     """Runs the data cleaner."""
 
     file_name = input("** Please Enter your '.pkl' filename: ")
@@ -151,7 +164,9 @@ def main():
 
 
 def get_player_data(game_data):
-    players = {}
+    """Goes thru each individual game's data and gets key player statistics."""
+
+    players = {} # base players dictionary that will hold all player info
 
     for data in game_data:
         if "liveData" in data:
@@ -193,6 +208,8 @@ def get_player_data(game_data):
 
 
 def organize_teams(players):
+    """Creates team objects and puts players on their respective teams."""
+
     all_team_names = [
         "Anaheim Ducks",
         "Arizona Coyotes",
@@ -250,6 +267,8 @@ def organize_teams(players):
 
 
 def get_game_data(data):
+    """Parses thru an individual game's data to gather player statistics."""
+
     if "liveData" in data:
         game_teams = data["liveData"]["boxscore"]["teams"]
 
