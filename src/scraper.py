@@ -48,6 +48,3 @@ def scrape_data(year, season_type, max_game_ID, export_file_name):
 
     with open(export_file_name, "wb") as f:
         pickle.dump(game_data, f, pickle.HIGHEST_PROTOCOL)
-
-
-run_scraper()  # runs the scraper

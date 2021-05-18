@@ -13,17 +13,26 @@ class Team:
         """Creates team."""
         self.team_name = team_name
         self.players = []
+        self.skaters_df = pd.DataFrame()
+        self.goalies_df = pd.DataFrame()
+
 
     def get_team_name(self):
         return self.team_name
 
     def print_all_players(self):
-        for player in self.players:
-            player.print_player_info()
+        print("--------------------", self.team_name, "--------------------")
+        print("* Printing Skaters:")
+        print(self.skaters_df)
+        print("* Printing Goalies:")
+        print(self.goalies_df)
 
     def add_player(self, new_player):
-        self.players.append(new_player)
-
+        self.players.append(new_player) # add player object to team
+        if new_player.get_player_position() == 'Goalie':
+            self.goalies_df=self.goalies_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
+        else:
+            self.skaters_df=self.skaters_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
 
 class Player:
     def __init__(self, id, name, position, team):
@@ -36,6 +45,9 @@ class Player:
 
     def get_player_team(self):
         return self.team
+
+    def get_player_position(self):
+        return self.position
 
     def update_player_team(self, new_team):
         self.team = new_team  # account for trades
@@ -90,6 +102,24 @@ class Player:
             except:
                 pass
         self.stats = counted_stats
+
+    def finalize_player_stats_df(self):
+        """Puts player info in a DF for future use/displaying."""
+        self.stats_df = pd.DataFrame.from_dict([self.stats])
+        self.stats_df.insert(loc=0, column = 'Team', value = [self.team])
+        self.stats_df.insert(loc=0, column = 'Position', value = [self.position])
+        self.stats_df.insert(loc=0, column = 'Name', value = [self.name])
+        self.stats_df.insert(loc=0, column = 'ID', value = [self.id])
+        self.stats_df = self.stats_df[sorted(self.stats_df)]
+
+    def get_finalized_player_stats_df(self):
+        return self.stats_df
+
+    def finalize_player_avg_stats_df(self):
+        print("NULL")
+        # calc average
+        # create value rating system
+        ## points + hits + shots + +/- + blocks
 
     def print_player_info(self):
         """Prints player information."""
@@ -209,7 +239,10 @@ def organize_teams(players):
             team_name = team.get_team_name()
 
             if player_team == team_name:
+                ### TODO: FINALIZE CODE HERE TO MAKE PLAYER DF
+                player.finalize_player_stats_df()
                 team.add_player(player)
+                ###
             else:
                 pass
 
@@ -303,6 +336,3 @@ def get_game_data(data):
                 ] = player_dict  # add finalized player to team for the game
 
     return teams
-
-
-main()

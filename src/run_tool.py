@@ -13,3 +13,5 @@ def main():
         data_cleaner.main()
     else:
         data_cleaner.main()
+
+main()
