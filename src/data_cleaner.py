@@ -50,6 +50,7 @@ class Player:
         self.position = position
         self.team = team
         self.stats = {}
+        self.avg_stats = {}
 
     def get_player_team(self):
         """Returns a player's team."""
@@ -133,10 +134,34 @@ class Player:
         return self.stats_df
 
     def finalize_player_avg_stats_df(self):
-        print("NULL")
-        # calc average
-        # create value rating system
-        ## points + hits + shots + +/- + blocks
+        try:
+            self.avg_stats['gp'] = self.stats['gp']
+
+            for key in self.stats.keys():
+                print(key, self.avg_stats)
+                if key == 'gp':
+                    pass
+                elif key == 'plusMinus':
+                    pass
+                elif key == 'faceOffPct':
+                    self.avg_stats['faceOffPct'] = self.stats['faceOffPct']
+                else:
+                    self.avg_stats[key] = self.stats[key] / self.stats['gp']
+
+            self.avg_stats_df = pd.DataFrame.from_dict([self.avg_stats])
+
+            self.avg_stats_df.insert(loc=0, column = 'Team', value = [self.team])
+            self.avg_stats_df.insert(loc=0, column = 'Position', value = [self.position])
+            self.avg_stats_df.insert(loc=0, column = 'Name', value = [self.name])
+            self.avg_stats_df.insert(loc=0, column = 'ID', value = [self.id])
+            self.avg_stats_df = self.avg_stats_df[sorted(self.avg_stats_df)]
+
+            # calc average
+            # create value rating system
+            ## points + hits + shots + +/- + blocks
+        except:
+            print(self.name)
+            print(self.stats)
 
     def print_player_dfs(self):
         """Prints player information."""
@@ -258,6 +283,7 @@ def organize_teams(players):
             if player_team == team_name:
                 ### TODO: FINALIZE CODE HERE TO MAKE PLAYER DF
                 player.finalize_player_stats_df()
+                player.finalize_player_avg_stats_df()
                 team.add_player(player)
                 ###
             else:
