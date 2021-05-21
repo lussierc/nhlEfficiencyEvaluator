@@ -7,24 +7,39 @@ import math
 import itertools
 from collections import Counter
 
+
 class League:
     """Holds league statistics."""
+
     def __init__(self):
         self.all_skaters_avg_stats_df = pd.DataFrame()
+
     def add_stats(self, stats):
-        self.all_skaters_avg_stats_df=self.all_skaters_avg_stats_df.append(stats, ignore_index=True)
+        self.all_skaters_avg_stats_df = self.all_skaters_avg_stats_df.append(
+            stats, ignore_index=True
+        )
+
     def print_stats(self):
 
-        self.all_skaters_avg_stats_df = self.all_skaters_avg_stats_df.sort_values(by=['Efficiency Value'], ascending=False)
-        print("\n\n\n--------------------", "Average League Statistics", "--------------------")
+        self.all_skaters_avg_stats_df = self.all_skaters_avg_stats_df.sort_values(
+            by=["Efficiency Value"], ascending=False
+        )
+        print(
+            "\n\n\n--------------------",
+            "Average League Statistics",
+            "--------------------",
+        )
         print(self.all_skaters_avg_stats_df)
 
-        file_name = input("Enter your export file name (EX: filename.csv), to export league stats:")
+        file_name = input(
+            "Enter your export file name (EX: filename.csv), to export league stats:"
+        )
         self.all_skaters_avg_stats_df.to_csv(file_name)
 
 
 class Team:
     """Holds a team's information and player objects."""
+
     def __init__(self, team_name):
         """Creates team."""
 
@@ -53,29 +68,36 @@ class Team:
         # print average player stats:
         print("* Printing Avg Skater Stats & Efficiency Metric:")
 
-        self.skaters_avg_stats_df = self.skaters_avg_stats_df.sort_values(by=['Efficiency Value'], ascending=False)
+        self.skaters_avg_stats_df = self.skaters_avg_stats_df.sort_values(
+            by=["Efficiency Value"], ascending=False
+        )
         print(self.skaters_avg_stats_df)
-
 
     def add_player(self, new_player):
         """Adds a new player to the team."""
 
-        self.players.append(new_player) # add player object to team
-        if new_player.get_player_position() == 'Goalie':
-            self.goalies_df=self.goalies_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
+        self.players.append(new_player)  # add player object to team
+        if new_player.get_player_position() == "Goalie":
+            self.goalies_df = self.goalies_df.append(
+                new_player.get_finalized_player_stats_df(), ignore_index=True
+            )
         else:
-            self.skaters_df=self.skaters_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
+            self.skaters_df = self.skaters_df.append(
+                new_player.get_finalized_player_stats_df(), ignore_index=True
+            )
             try:
                 df = new_player.get_finalized_avg_player_stats_df()
-                if 'savePercentage' not in df.columns:
-                    self.skaters_avg_stats_df=self.skaters_avg_stats_df.append(df, ignore_index=True)
+                if "savePercentage" not in df.columns:
+                    self.skaters_avg_stats_df = self.skaters_avg_stats_df.append(
+                        df, ignore_index=True
+                    )
             except Exception:
                 pass
 
 
-
 class Player:
     """Player class. Holds the general information and stats for an individual player."""
+
     def __init__(self, id, name, position, team):
         """Creates player."""
 
@@ -156,10 +178,10 @@ class Player:
 
         self.stats_df = pd.DataFrame.from_dict([self.stats])
 
-        self.stats_df.insert(loc=0, column = 'Team', value = [self.team])
-        self.stats_df.insert(loc=0, column = 'Position', value = [self.position])
-        self.stats_df.insert(loc=0, column = 'Name', value = [self.name])
-        self.stats_df.insert(loc=0, column = 'ID', value = [self.id])
+        self.stats_df.insert(loc=0, column="Team", value=[self.team])
+        self.stats_df.insert(loc=0, column="Position", value=[self.position])
+        self.stats_df.insert(loc=0, column="Name", value=[self.name])
+        self.stats_df.insert(loc=0, column="ID", value=[self.id])
         self.stats_df = self.stats_df[sorted(self.stats_df)]
 
     def get_finalized_player_stats_df(self):
@@ -172,60 +194,65 @@ class Player:
 
     def finalize_player_avg_stats_df(self):
         try:
-            self.avg_stats['gp'] = self.stats['gp']
+            self.avg_stats["gp"] = self.stats["gp"]
         except:
-            self.avg_stats['gp'] = 0
+            self.avg_stats["gp"] = 0
 
-        if self.avg_stats['gp'] != 0:
+        if self.avg_stats["gp"] != 0:
             for key in self.stats.keys():
-                if key == 'gp':
+                if key == "gp":
                     pass
-                elif key == 'plusMinus':
+                elif key == "plusMinus":
                     pass
-                elif key == 'faceOffPct':
-                    self.avg_stats['faceOffPct'] = self.stats['faceOffPct']
+                elif key == "faceOffPct":
+                    self.avg_stats["faceOffPct"] = self.stats["faceOffPct"]
                 else:
-                    self.avg_stats[key] = self.stats[key] / self.stats['gp']
+                    self.avg_stats[key] = self.stats[key] / self.stats["gp"]
 
-            avg_points = self.avg_stats['goals'] + self.avg_stats['assists']
+            avg_points = self.avg_stats["goals"] + self.avg_stats["assists"]
 
             if avg_points != 0:
-                eff_points = avg_points * .75
+                eff_points = avg_points * 0.75
             else:
                 eff_points = 0
 
-            if self.avg_stats['shots'] != 0:
-                eff_shots = self.avg_stats['shots'] * .5
+            if self.avg_stats["shots"] != 0:
+                eff_shots = self.avg_stats["shots"] * 0.5
             else:
                 eff_shots = 0
 
             try:
-                eff_plusminus = .2
+                eff_plusminus = 0.2
             except:
-                eff_plusminus = self.stats['plusMinus'] * .5
+                eff_plusminus = self.stats["plusMinus"] * 0.5
 
             try:
-                eff_blocked = self.avg_stats['blocked'] * .2
+                eff_blocked = self.avg_stats["blocked"] * 0.2
             except:
                 eff_blocked = 0
 
             try:
-                eff_hits = self.avg_stats['hits'] * .2
+                eff_hits = self.avg_stats["hits"] * 0.2
             except:
                 eff_hits = 0
 
-            eff_value = (eff_points + eff_shots + eff_plusminus + eff_blocked + eff_hits) / 5
+            eff_value = (
+                eff_points + eff_shots + eff_plusminus + eff_blocked + eff_hits
+            ) / 5
 
             self.avg_stats_df = pd.DataFrame.from_dict([self.avg_stats])
 
-            self.avg_stats_df.insert(loc=0, column = 'Efficiency Value', value = [eff_value])
-            self.avg_stats_df.insert(loc=0, column = 'Team', value = [self.team])
-            self.avg_stats_df.insert(loc=0, column = 'Position', value = [self.position])
-            self.avg_stats_df.insert(loc=0, column = 'Name', value = [self.name])
-            self.avg_stats_df.insert(loc=0, column = 'ID', value = [self.id])
+            self.avg_stats_df.insert(
+                loc=0, column="Efficiency Value", value=[eff_value]
+            )
+            self.avg_stats_df.insert(loc=0, column="Team", value=[self.team])
+            self.avg_stats_df.insert(loc=0, column="Position", value=[self.position])
+            self.avg_stats_df.insert(loc=0, column="Name", value=[self.name])
+            self.avg_stats_df.insert(loc=0, column="ID", value=[self.id])
             self.avg_stats_df = self.avg_stats_df[sorted(self.avg_stats_df)]
         else:
             pass
+
 
 def run_data_cleaner():
     """Runs the data cleaner."""
@@ -247,10 +274,11 @@ def run_data_cleaner():
 
     league.print_stats()
 
+
 def get_player_data(game_data):
     """Goes thru each individual game's data and gets key player statistics."""
 
-    players = {} # base players dictionary that will hold all player info
+    players = {}  # base players dictionary that will hold all player info
 
     for data in game_data:
         if "liveData" in data:
@@ -343,14 +371,13 @@ def organize_teams(players):
             if player_team == team_name:
                 ### TODO: FINALIZE CODE HERE TO MAKE PLAYER DF
                 player.finalize_player_stats_df()
-                if player.get_player_position() != 'Goalie':
+                if player.get_player_position() != "Goalie":
                     player.finalize_player_avg_stats_df()
                 team.add_player(player)
                 ###
             else:
                 pass
         league.add_stats(team.get_skaters_avg_stats_df())
-
 
     return teams, league
 
