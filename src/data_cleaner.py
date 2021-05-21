@@ -15,6 +15,7 @@ class Team:
         self.team_name = team_name
         self.players = []
         self.skaters_df = pd.DataFrame()
+        self.skaters_avg_stats_df = pd.DataFrame()
         self.goalies_df = pd.DataFrame()
 
     def get_team_name(self):
@@ -30,6 +31,10 @@ class Team:
         # print goalies on team:
         print("* Printing Goalies:")
         print(self.goalies_df)
+        # print average player stats:
+        print("* Printing Avg Skater Stats & Efficiency Metric:")
+        print(self.skaters_avg_stats_df)
+
 
     def add_player(self, new_player):
         """Adds a new player to the team."""
@@ -39,6 +44,12 @@ class Team:
             self.goalies_df=self.goalies_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
         else:
             self.skaters_df=self.skaters_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
+            try:
+                self.skaters_avg_stats_df=self.skaters_avg_stats_df.append(new_player.get_finalized_avg_player_stats_df(), ignore_index=True)
+            except:
+                print("Nothing")
+
+
 
 class Player:
     """Player class. Holds the general information and stats for an individual player."""
@@ -132,6 +143,9 @@ class Player:
         """Return the finalied player DF."""
 
         return self.stats_df
+
+    def get_finalized_avg_player_stats_df(self):
+        return self.avg_stats_df
 
     def finalize_player_avg_stats_df(self):
         try:
