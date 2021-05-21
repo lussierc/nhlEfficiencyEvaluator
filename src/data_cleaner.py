@@ -14,9 +14,14 @@ class League:
     def add_stats(self, stats):
         self.all_skaters_avg_stats_df=self.all_skaters_avg_stats_df.append(stats, ignore_index=True)
     def print_stats(self):
-        print("I AM PRI")
+
         self.all_skaters_avg_stats_df = self.all_skaters_avg_stats_df.sort_values(by=['Efficiency Value'], ascending=False)
+        print("\n\n\n--------------------", "Average League Statistics", "--------------------")
         print(self.all_skaters_avg_stats_df)
+
+        file_name = input("Enter your export file name (EX: filename.csv), to export league stats:")
+        self.all_skaters_avg_stats_df.to_csv(file_name)
+
 
 class Team:
     """Holds a team's information and player objects."""
@@ -64,8 +69,8 @@ class Team:
                 df = new_player.get_finalized_avg_player_stats_df()
                 if 'savePercentage' not in df.columns:
                     self.skaters_avg_stats_df=self.skaters_avg_stats_df.append(df, ignore_index=True)
-            except:
-                print("Nothing")
+            except Exception:
+                pass
 
 
 
@@ -184,9 +189,6 @@ class Player:
 
             avg_points = self.avg_stats['goals'] + self.avg_stats['assists']
 
-            print("HERE HERE HERE", self.avg_stats)
-
-
             if avg_points != 0:
                 eff_points = avg_points * .75
             else:
@@ -222,15 +224,8 @@ class Player:
             self.avg_stats_df.insert(loc=0, column = 'Name', value = [self.name])
             self.avg_stats_df.insert(loc=0, column = 'ID', value = [self.id])
             self.avg_stats_df = self.avg_stats_df[sorted(self.avg_stats_df)]
-            print(self.avg_stats_df)
         else:
             pass
-
-    def print_player_dfs(self):
-        """Prints player information."""
-
-        print("Player DF:")
-        print(self.stats_df)
 
 def run_data_cleaner():
     """Runs the data cleaner."""
