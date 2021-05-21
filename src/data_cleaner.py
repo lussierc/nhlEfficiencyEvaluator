@@ -7,6 +7,17 @@ import math
 import itertools
 from collections import Counter
 
+class League:
+    """Holds league statistics."""
+    def __init__(self):
+        self.all_skaters_avg_stats_df = pd.DataFrame()
+    def add_stats(self, stats):
+        self.all_skaters_avg_stats_df=self.all_skaters_avg_stats_df.append(stats, ignore_index=True)
+    def print_stats(self):
+        print("I AM PRI")
+        self.all_skaters_avg_stats_df = self.all_skaters_avg_stats_df.sort_values(by=['Efficiency Value'], ascending=False)
+        print(self.all_skaters_avg_stats_df)
+
 class Team:
     """Holds a team's information and player objects."""
     def __init__(self, team_name):
@@ -21,6 +32,9 @@ class Team:
     def get_team_name(self):
         return self.team_name
 
+    def get_skaters_avg_stats_df(self):
+        return self.skaters_avg_stats_df
+
     def print_all_players(self):
         """Prints out the team DFs of players."""
 
@@ -33,6 +47,8 @@ class Team:
         print(self.goalies_df)
         # print average player stats:
         print("* Printing Avg Skater Stats & Efficiency Metric:")
+
+        self.skaters_avg_stats_df = self.skaters_avg_stats_df.sort_values(by=['Efficiency Value'], ascending=False)
         print(self.skaters_avg_stats_df)
 
 
@@ -45,7 +61,9 @@ class Team:
         else:
             self.skaters_df=self.skaters_df.append(new_player.get_finalized_player_stats_df(), ignore_index=True)
             try:
-                self.skaters_avg_stats_df=self.skaters_avg_stats_df.append(new_player.get_finalized_avg_player_stats_df(), ignore_index=True)
+                df = new_player.get_finalized_avg_player_stats_df()
+                if 'savePercentage' not in df.columns:
+                    self.skaters_avg_stats_df=self.skaters_avg_stats_df.append(df, ignore_index=True)
             except:
                 print("Nothing")
 
@@ -227,11 +245,12 @@ def run_data_cleaner():
 
     players = get_player_data(game_data)
 
-    teams = organize_teams(players)
+    teams, league = organize_teams(players)
     for team in teams:
         print(team.get_team_name())
         team.print_all_players()
 
+    league.print_stats()
 
 def get_player_data(game_data):
     """Goes thru each individual game's data and gets key player statistics."""
@@ -315,6 +334,7 @@ def organize_teams(players):
     ]
 
     teams = []
+    league = League()
     for team_name in all_team_names:
         team = Team(team_name)
         teams.append(team)
@@ -334,8 +354,10 @@ def organize_teams(players):
                 ###
             else:
                 pass
+        league.add_stats(team.get_skaters_avg_stats_df())
 
-    return teams
+
+    return teams, league
 
 
 def get_game_data(data):
