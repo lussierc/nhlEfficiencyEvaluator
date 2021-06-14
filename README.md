@@ -1,6 +1,6 @@
 # NHL Player Efficiency Evaluator
 
-![Project Logo](images/resources/nhlEfficiencyEval.png)
+![Project Logo](resources/images/nhlEfficiencyEval.png)
 
 This project evaluates NHL player statistics to determine how accurate they are on the ice.
 
